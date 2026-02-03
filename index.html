@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>薪昌股份 - 出貨調撥管理系統</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        .status-complete { color: green; font-weight: bold; }
+        .status-partial { color: orange; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h2>12/18 盤貨至大樹 - 出貨檢核工具</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>母件編號/名稱</th>
+            <th>組成零件 (請勾選已上車項目)</th>
+            <th>系統判定調撥量</th>
+            <th>備註</th>
+        </tr>
+    </thead>
+    <tbody id="inventoryBody">
+        <tr>
+            <td>6BH2Y00002 旋轉樓梯</td>
+            <td>
+                <input type="checkbox" class="item-part" data-parent="stair" onchange="calculate('stair')"> 本體 (已出)<br>
+                <input type="checkbox" class="item-part" data-parent="stair" onchange="calculate('stair')"> 轉台欄杆 (已出)
+            </td>
+            <td id="stair-result">0</td>
+            <td><input type="text" placeholder="輸入車次"></td>
+        </tr>
+        
+        <tr>
+            <td>6AE3BC001 待拌槽</td>
+            <td>
+                <input type="checkbox" class="item-part" data-parent="tank" onchange="calculate('tank')"> 桶架 (已出)<br>
+                <input type="checkbox" class="item-part" data-parent="tank" onchange="calculate('tank')"> 閘門/氣缸 (已出)
+            </td>
+            <td id="tank-result">0</td>
+            <td><input type="text" placeholder="輸入車次"></td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+function calculate(parentId) {
+    const parts = document.querySelectorAll(`[data-parent="${parentId}"]`);
+    const totalParts = parts.length;
+    let checkedCount = 0;
+
+    parts.forEach(p => { if (p.checked) checkedCount++; });
+
+    const resultCell = document.getElementById(parentId + '-result');
+    
+    if (checkedCount === 0) {
+        resultCell.innerText = "0";
+        resultCell.className = "";
+    } else if (checkedCount === totalParts) {
+        resultCell.innerText = "1.0 (全出)";
+        resultCell.className = "status-complete";
+    } else {
+        resultCell.innerText = "0.5 (部分出貨)";
+        resultCell.className = "status-partial";
+    }
+}
+</script>
+
+</body>
+</html>
